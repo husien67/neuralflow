@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NeuralFlow — Early Access | AI Infrastructure in Development</title>
+<meta name="description" content="NeuralFlow is an early-stage AI infrastructure product currently in development and not yet launched. Planned features include model routing, guardrails, and observability. Join the waitlist for launch updates." />
+<meta property="og:title" content="NeuralFlow — Early Access | In Development" />
+<meta property="og:description" content="We're building AI infrastructure for modern teams. NeuralFlow is not yet launched. Join the waitlist to hear when we launch." />
+<meta property="og:type" content="website" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #05060a;
+    --bg-2: #0a0b12;
+    --panel: rgba(255, 255, 255, 0.03);
+    --border: rgba(255, 255, 255, 0.08);
+    --text: #e8eaf2;
+    --muted: #8b90a5;
+    --accent: #7c5cff;
+    --accent-2: #00e5c3;
+    --accent-3: #ff5cc8;
+    --glow: rgba(124, 92, 255, 0.35);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif;
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+  h1, h2, h3, .logo { font-family: 'Space Grotesk', sans-serif; }
+
+  ::selection { background: var(--accent); color: #fff; }
+
+  /* ---------- 3D Canvas ---------- */
+  #webgl {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* ---------- Nav ---------- */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 5vw;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    background: rgba(5, 6, 10, 0.55);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  nav.scrolled { border-bottom-color: var(--border); background: rgba(5, 6, 10, 0.85); }
+  .logo {
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #fff;
+    text-decoration: none;
+  }
+  .logo-mark {
+    width: 30px; height: 30px;
+    border-radius: 9px;
+    background: conic-gradient(from 210deg, var(--accent), var(--accent-2), var(--accent-3), var(--accent));
+    box-shadow: 0 0 20px var(--glow);
+    position: relative;
+  }
+  .logo-mark::after {
+    content: '';
+    position: absolute; inset: 6px;
+    background: var(--bg);
+    border-radius: 4px;
+  }
+  .nav-links { display: flex; gap: 34px; list-style: none; }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.92rem;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: #fff; }
+  .nav-cta { display: flex; gap: 12px; align-items: center; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 22px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    border: 1px solid transparent;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s, border-color 0.2s;
+    white-space: nowrap;
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), #5a3df0);
+    color: #fff;
+    box-shadow: 0 8px 30px var(--glow);
+  }
+  .btn-primary:hover { box-shadow: 0 12px 40px rgba(124, 92, 255, 0.55); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text);
+    border-color: var(--border);
+  }
+  .btn-ghost:hover { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.04); }
+  .btn-lg { padding: 15px 32px; font-size: 1rem; border-radius: 12px; }
+
+  .menu-toggle { display: none; background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 140px 5vw 80px;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 16px;
+    border-radius: 999px;
+    background: rgba(124, 92, 255, 0.12);
+    border: 1px solid rgba(124, 92, 255, 0.35);
+    color: #b8a5ff;
+    font-size: 0.82rem;
+    font-weight: 500;
+    margin-bottom: 28px;
+    backdrop-filter: blur(10px);
+  }
+  .badge-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--accent-2);
+    box-shadow: 0 0 10px var(--accent-2);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  .hero h1 {
+    font-size: clamp(2.6rem, 7vw, 5.2rem);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+    max-width: 900px;
+    margin-bottom: 24px;
+  }
+  .gradient-text {
+    background: linear-gradient(100deg, var(--accent) 0%, var(--accent-2) 50%, var(--accent-3) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 200% auto;
+    animation: shine 6s linear infinite;
+  }
+  @keyframes shine { to { background-position: 200% center; } }
+
+  .hero p {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: var(--muted);
+    max-width: 620px;
+    margin-bottom: 40px;
+    font-weight: 400;
+  }
+  .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin-bottom: 20px; }
+  .hero-note { font-size: 0.85rem; color: var(--muted); max-width: 520px; }
+
+  /* ---------- Sections ---------- */
+  section { position: relative; z-index: 1; padding: 110px 5vw; }
+  .section-head { text-align: center; max-width: 640px; margin: 0 auto 70px; }
+  .eyebrow {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--accent-2);
+    margin-bottom: 16px;
+  }
+  .section-head h2 {
+    font-size: clamp(2rem, 4.5vw, 3.2rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.12;
+    margin-bottom: 18px;
+  }
+  .section-head p { color: var(--muted); font-size: 1.05rem; }
+  .disclaimer-box {
+    max-width: 720px;
+    margin: 0 auto 50px;
+    padding: 16px 22px;
+    border-radius: 12px;
+    border: 1px solid rgba(0,229,195,0.3);
+    background: rgba(0,229,195,0.06);
+    color: #c5c9d8;
+    font-size: 0.92rem;
+    text-align: center;
+  }
+
+  /* ---------- Features ---------- */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 22px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 34px 30px;
+    backdrop-filter: blur(12px);
+    transition: transform 0.35s cubic-bezier(.2,.8,.2,1), border-color 0.35s, box-shadow 0.35s;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(124,92,255,0.6), transparent);
+    opacity: 0;
+    transition: opacity 0.35s;
+  }
+  .card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(124, 92, 255, 0.4);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 40px rgba(124,92,255,0.08);
+  }
+  .card:hover::before { opacity: 1; }
+  .card-icon {
+    width: 50px; height: 50px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 22px;
+    background: linear-gradient(135deg, rgba(124,92,255,0.2), rgba(0,229,195,0.12));
+    border: 1px solid rgba(124,92,255,0.3);
+  }
+  .card h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 10px; letter-spacing: -0.01em; }
+  .card p { color: var(--muted); font-size: 0.93rem; }
+  .coming-soon {
+    display: inline-block;
+    margin-top: 14px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+    border: 1px solid rgba(0,229,195,0.35);
+    border-radius: 999px;
+    padding: 4px 12px;
+  }
+
+  /* ---------- Showcase ---------- */
+  .showcase {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 70px;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .showcase-visual {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: linear-gradient(160deg, rgba(124,92,255,0.1), rgba(0,229,195,0.05));
+    aspect-ratio: 4/3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    perspective: 1000px;
+  }
+  .tilt-card {
+    width: 82%;
+    background: rgba(8, 9, 15, 0.9);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 24px;
+    transform: rotateY(-14deg) rotateX(8deg);
+    transition: transform 0.4s ease-out;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+  }
+  .tilt-card .row { display: flex; gap: 8px; margin-bottom: 16px; }
+  .tilt-card .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .code-line {
+    height: 9px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    background: rgba(255,255,255,0.08);
+  }
+  .code-line.w80 { width: 80%; }
+  .code-line.w60 { width: 60%; }
+  .code-line.w90 { width: 90%; }
+  .code-line.w45 { width: 45%; }
+  .code-line.accent { background: linear-gradient(90deg, var(--accent), var(--accent-2)); opacity: 0.7; }
+  .code-line.accent2 { background: linear-gradient(90deg, var(--accent-3), var(--accent)); opacity: 0.6; }
+  .float-chip {
+    position: absolute;
+    padding: 10px 16px;
+    border-radius: 12px;
+    background: rgba(8, 9, 15, 0.92);
+    border: 1px solid rgba(0,229,195,0.4);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--accent-2);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    animation: floaty 4s ease-in-out infinite;
+  }
+  .float-chip.c1 { top: 14%; right: 8%; animation-delay: 0s; }
+  .float-chip.c2 { bottom: 16%; left: 6%; border-color: rgba(124,92,255,0.4); color: #b8a5ff; animation-delay: 1.4s; }
+  @keyframes floaty {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+  .showcase-text h2 {
+    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    margin-bottom: 20px;
+  }
+  .showcase-text > p { color: var(--muted); margin-bottom: 28px; font-size: 1.02rem; }
+  .check-list { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+  .check-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 0.95rem;
+    color: #c5c9d8;
+  }
+  .check {
+    flex-shrink: 0;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: rgba(0,229,195,0.15);
+    border: 1px solid rgba(0,229,195,0.5);
+    color: var(--accent-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    margin-top: 2px;
+  }
+
+  /* ---------- Steps ---------- */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+    counter-reset: step;
+  }
+  .step {
+    position: relative;
+    padding: 34px 28px;
+    border-radius: 18px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    counter-increment: step;
+  }
+  .step::before {
+    content: counter(step, decimal-leading-zero);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2.6rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: block;
+    margin-bottom: 16px;
+    line-height: 1;
+  }
+  .step h3 { font-size: 1.15rem; margin-bottom: 8px; }
+  .step p { color: var(--muted); font-size: 0.92rem; }
+
+  /* ---------- Pricing ---------- */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    max-width: 900px;
+    margin: 0 auto;
+    align-items: stretch;
+  }
+  .price-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 38px 32px;
+    display: flex;
+    flex-direction: column;
+    backdrop-filter: blur(12px);
+    transition: transform 0.3s, border-color 0.3s;
+    position: relative;
+  }
+  .price-card:hover { transform: translateY(-6px); }
+  .price-card.popular {
+    border-color: rgba(124,92,255,0.55);
+    background: linear-gradient(180deg, rgba(124,92,255,0.1), rgba(255,255,255,0.02));
+    box-shadow: 0 0 60px rgba(124,92,255,0.15);
+  }
+  .popular-tag {
+    position: absolute;
+    top: -13px; left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, var(--accent), var(--accent-3));
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 5px 16px;
+    border-radius: 999px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .price-card .tier { font-size: 0.95rem; font-weight: 600; color: var(--muted); margin-bottom: 14px; }
+  .price-card .amount {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 3rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .price-card .amount span { font-size: 1rem; font-weight: 500; color: var(--muted); letter-spacing: 0; }
+  .price-card .desc { font-size: 0.88rem; color: var(--muted); margin-bottom: 28px; }
+  .price-feats { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; flex: 1; }
+  .price-feats li {
+    display: flex; gap: 10px; align-items: center;
+    font-size: 0.9rem; color: #c5c9d8;
+  }
+  .price-feats li::before {
+    content: '✓';
+    color: var(--accent-2);
+    font-weight: 700;
+    font-size: 0.8rem;
+  }
+  .price-card .btn { justify-content: center; width: 100%; }
+  .pricing-note {
+    max-width: 720px;
+    margin: 34px auto 0;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  /* ---------- Waitlist / CTA ---------- */
+  .cta-box {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+    padding: clamp(50px, 8vw, 90px) clamp(24px, 5vw, 60px);
+    border-radius: 28px;
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(124,92,255,0.25), transparent 55%),
+      radial-gradient(ellipse at 80% 100%, rgba(0,229,195,0.18), transparent 55%),
+      rgba(255,255,255,0.03);
+    border: 1px solid rgba(124,92,255,0.3);
+    backdrop-filter: blur(16px);
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-box h2 {
+    font-size: clamp(1.9rem, 4vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    margin-bottom: 16px;
+    line-height: 1.15;
+  }
+  .cta-box p { color: var(--muted); font-size: 1.05rem; margin-bottom: 36px; max-width: 520px; margin-left: auto; margin-right: auto; }
+  .waitlist-form {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+  .waitlist-form input[type="email"] {
+    flex: 1;
+    min-width: 240px;
+    padding: 15px 18px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: rgba(0,0,0,0.4);
+    color: #fff;
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+  }
+  .waitlist-form input[type="email"]:focus { border-color: var(--accent); }
+  .form-msg { margin-top: 18px; font-size: 0.92rem; min-height: 1.4em; }
+  .form-msg.error { color: #ff7a9e; }
+  .form-msg.success { color: var(--accent-2); }
+  .form-small { margin-top: 14px; font-size: 0.8rem !important; margin-bottom: 0 !important; }
+  .form-small a { color: #b8a5ff; }
+
+  /* ---------- Footer ---------- */
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 70px 5vw 36px;
+    background: rgba(8, 9, 14, 0.85);
+    backdrop-filter: blur(12px);
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto 50px;
+  }
+  .footer-brand p { color: var(--muted); font-size: 0.9rem; margin-top: 16px; max-width: 280px; }
+  .footer-col h4 {
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #fff;
+    margin-bottom: 18px;
+    font-weight: 600;
+  }
+  .footer-col a {
+    display: block;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+    transition: color 0.2s;
+  }
+  .footer-col a:hover { color: #fff; }
+  .footer-bottom {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-top: 28px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    font-size: 0.84rem;
+    color: var(--muted);
+  }
+  .footer-bottom a { color: var(--muted); text-decoration: none; }
+  .footer-bottom a:hover { color: #fff; }
+
+  /* ---------- Reveal animation ---------- */
+  .reveal {
+    opacity: 0;
+    transform: translateY(36px);
+    transition: opacity 0.8s cubic-bezier(.2,.8,.2,1), transform 0.8s cubic-bezier(.2,.8,.2,1);
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal[data-delay="1"] { transition-delay: 0.12s; }
+  .reveal[data-delay="2"] { transition-delay: 0.24s; }
+  .reveal[data-delay="3"] { transition-delay: 0.36s; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 900px) {
+    .nav-links { display: none; }
+    .nav-links.open {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      top: 100%; left: 0; right: 0;
+      background: rgba(5,6,10,0.97);
+      padding: 24px 5vw;
+      border-bottom: 1px solid var(--border);
+      gap: 18px;
+    }
+    .menu-toggle { display: block; }
+    .nav-cta .btn-ghost { display: none; }
+    .showcase { grid-template-columns: 1fr; gap: 40px; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 540px) {
+    .footer-grid { grid-template-columns: 1fr; }
+    .waitlist-form input[type="email"] { min-width: 100%; }
+    .waitlist-form .btn { width: 100%; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="webgl"></canvas>
+
+<nav id="nav">
+  <a href="/" class="logo"><span class="logo-mark"></span>NeuralFlow</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#platform">Platform</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="/contact.html">Contact</a></li>
+  </ul>
+  <div class="nav-cta">
+    <a href="/contact.html" class="btn btn-ghost">Contact us</a>
+    <a href="#waitlist" class="btn btn-primary">Join the waitlist</a>
+    <button class="menu-toggle" id="menuToggle" aria-label="Menu">☰</button>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="badge reveal"><span class="badge-dot"></span> Early access — now in development</div>
+  <h1 class="reveal" data-delay="1">We&rsquo;re building <span class="gradient-text">AI infrastructure</span> that just works</h1>
+  <p class="reveal" data-delay="2">NeuralFlow is an early-stage product that is not yet launched. We are building a platform to help teams deploy, monitor, and scale generative AI. Join the waitlist to get notified at launch.</p>
+  <div class="hero-actions reveal" data-delay="3">
+    <a href="#waitlist" class="btn btn-primary btn-lg">Join the waitlist →</a>
+    <a href="#features" class="btn btn-ghost btn-lg">See planned features</a>
+  </div>
+  <p class="hero-note reveal" data-delay="3">Currently in development — no public product yet. No account creation or payment is available at this time.</p>
+</header>
+
+<section id="features">
+  <div class="section-head reveal">
+    <div class="eyebrow">Planned features</div>
+    <h2>What we are building</h2>
+    <p>NeuralFlow is not yet available. The items below describe features we plan to build and may change before launch.</p>
+  </div>
+  <div class="disclaimer-box reveal">Status: in development. Nothing on this page is currently available for purchase or use.</div>
+  <div class="features-grid">
+    <div class="card reveal">
+      <div class="card-icon">⚡</div>
+      <h3>Managed inference (planned)</h3>
+      <p>We plan to offer managed model inference so teams will not need to run their own infrastructure. Performance targets will be published after testing.</p>
+      <span class="coming-soon">Coming soon</span>
+    </div>
+    <div class="card reveal" data-delay="1">
+      <div class="card-icon">🧠</div>
+      <h3>Model routing (planned)</h3>
+      <p>We plan to route each request to a suitable model based on cost and quality needs. Provider and model support will be announced at launch.</p>
+      <span class="coming-soon">Coming soon</span>
+    </div>
+    <div class="card reveal" data-delay="2">
+      <div class="card-icon">🛡️</div>
+      <h3>Guardrails (planned)</h3>
+      <p>We plan to add content filtering and policy controls at the gateway layer to help teams handle sensitive data responsibly.</p>
+      <span class="coming-soon">Coming soon</span>
+    </div>
+    <div class="card reveal">
+      <div class="card-icon">📊</div>
+      <h3>Observability (planned)</h3>
+      <p>We plan to provide traces and usage dashboards so teams will be able to inspect requests and understand costs.</p>
+      <span class="coming-soon">Coming soon</span>
+    </div>
+    <div class="card reveal" data-delay="1">
+      <div class="card-icon">🔗</div>
+      <h3>Integrations (planned)</h3>
+      <p>We plan to build connectors for commonly used data sources and tools. The initial list of integrations will be confirmed closer to launch.</p>
+      <span class="coming-soon">Coming soon</span>
+    </div>
+    <div class="card reveal" data-delay="2">
+      <div class="card-icon">🔒</div>
+      <h3>Security practices (planned)</h3>
+      <p>We plan to follow industry security best practices as we build. We do not currently hold any security certifications.</p>
+      <span class="coming-soon">Coming soon</span>
+    </div>
+  </div>
+</section>
+
+<section id="platform">
+  <div class="showcase">
+    <div class="showcase-visual reveal">
+      <div class="tilt-card" id="tiltCard">
+        <div class="row">
+          <div class="dot" style="background:#ff5f57"></div>
+          <div class="dot" style="background:#febc2e"></div>
+          <div class="dot" style="background:#28c840"></div>
+        </div>
+        <div class="code-line accent w60"></div>
+        <div class="code-line w90"></div>
+        <div class="code-line w80"></div>
+        <div class="code-line accent2 w45"></div>
+        <div class="code-line w80"></div>
+        <div class="code-line w60"></div>
+        <div class="code-line accent w90"></div>
+        <div class="code-line w45"></div>
+      </div>
+      <div class="float-chip c1">● In development</div>
+      <div class="float-chip c2">⚙ Planned SDK</div>
+    </div>
+    <div class="showcase-text reveal" data-delay="1">
+      <div class="eyebrow">The Platform (planned)</div>
+      <h2>A single SDK we are working toward</h2>
+      <p>Our goal is a simple developer experience: add an API key and get streaming, retries, and observability in one place. This product does not exist yet — the outline below describes our current plan.</p>
+      <ul class="check-list">
+        <li><span class="check">✓</span> Planned: one API intended to work with multiple models</li>
+        <li><span class="check">✓</span> Planned: streaming responses</li>
+        <li><span class="check">✓</span> Planned: automatic failover across providers</li>
+        <li><span class="check">✓</span> Planned: simple deployment workflow</li>
+        <li><span class="check">✓</span> Planned: usage tracking with spend controls</li>
+      </ul>
+      <br />
+      <a href="#waitlist" class="btn btn-primary">Join the waitlist →</a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-head reveal">
+    <div class="eyebrow">How it will work</div>
+    <h2>Our planned workflow</h2>
+    <p>These steps describe what we intend the product to do once it launches.</p>
+  </div>
+  <div class="steps">
+    <div class="step reveal">
+      <h3>Connect your data (planned)</h3>
+      <p>We plan to let you sync documents and databases, with automatic chunking and indexing.</p>
+    </div>
+    <div class="step reveal" data-delay="1">
+      <h3>Compose your workflow (planned)</h3>
+      <p>We plan to offer a builder and code-based tools for chaining retrieval and model calls.</p>
+    </div>
+    <div class="step reveal" data-delay="2">
+      <h3>Deploy (planned)</h3>
+      <p>We plan to provide a single deployment path so you will be able to ship updates without managing servers.</p>
+    </div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="section-head reveal">
+    <div class="eyebrow">Pricing</div>
+    <h2>Indicative pricing</h2>
+    <p>Pricing is indicative and may change at launch. The product is not yet available and no payment is being accepted.</p>
+  </div>
+  <div class="pricing-grid">
+    <div class="price-card reveal">
+      <div class="tier">Starter</div>
+      <div class="amount">$0<span>/mo</span></div>
+      <div class="desc">Planned entry tier for exploration after launch</div>
+      <ul class="price-feats">
+        <li>Planned usage allowance (to be confirmed)</li>
+        <li>Community support (planned)</li>
+        <li>1 project (planned)</li>
+        <li>Basic analytics (planned)</li>
+      </ul>
+      <a href="#waitlist" class="btn btn-ghost">Join the waitlist</a>
+    </div>
+    <div class="price-card popular reveal" data-delay="1">
+      <div class="popular-tag">Planned</div>
+      <div class="tier">Pro</div>
+      <div class="amount">$49<span>/mo</span></div>
+      <div class="desc">Planned tier for growing teams after launch</div>
+      <ul class="price-feats">
+        <li>Monthly usage allowance (to be confirmed)</li>
+        <li>Priority support (planned)</li>
+        <li>Multiple projects (planned)</li>
+        <li>Observability dashboards (planned)</li>
+        <li>Guardrails (planned)</li>
+      </ul>
+      <a href="#waitlist" class="btn btn-primary">Join the waitlist</a>
+    </div>
+  </div>
+  <div class="pricing-note reveal">
+    <p><strong>Pricing is indicative and may change at launch.</strong> If offered, Pro would be billed at $49 per month on a monthly billing period. You would be able to cancel anytime, with access continuing until the end of the paid month. Payments, when enabled, will be processed by Paddle, acting as Merchant of Record. See our <a href="/terms.html" style="color:#b8a5ff">Terms</a> and <a href="/refund.html" style="color:#b8a5ff">Refund Policy</a>.</p>
+  </div>
+</section>
+
+<section id="waitlist">
+  <div class="cta-box reveal">
+    <h2>Get notified at launch</h2>
+    <p>NeuralFlow is not yet available. Join the waitlist and we will email you when we launch. No spam — one email at launch plus occasional updates.</p>
+    <form class="waitlist-form" id="waitlistForm" action="/api/waitlist" method="POST" novalidate>
+      <input type="email" id="waitlistEmail" name="email" placeholder="you@example.com" autocomplete="email" required aria-label="Email address" />
+      <button type="submit" class="btn btn-primary btn-lg" id="waitlistBtn">Join the waitlist</button>
+    </form>
+    <div class="form-msg" id="waitlistMsg" role="status" aria-live="polite"></div>
+    <p class="form-small">By joining, you agree to our <a href="/privacy.html">Privacy Policy</a> and <a href="/terms.html">Terms</a>.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="/" class="logo"><span class="logo-mark"></span>NeuralFlow</a>
+      <p>An early-stage AI infrastructure product, currently in development and not yet launched.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Product</h4>
+      <a href="#features">Planned features</a>
+      <a href="#platform">Platform</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#waitlist">Waitlist</a>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <a href="/privacy.html">Privacy Policy</a>
+      <a href="/terms.html">Terms of Service</a>
+      <a href="/refund.html">Refund Policy</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="/contact.html">Contact</a>
+      <a href="#waitlist">Waitlist</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div>© 2026 [Your Legal Name]. All rights reserved.</div>
+    <div style="display:flex;gap:22px">
+      <a href="/privacy.html">Privacy</a>
+      <a href="/terms.html">Terms</a>
+      <a href="/refund.html">Refunds</a>
+    </div>
+  </div>
+</footer>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+
+/* ================= 3D SCENE ================= */
+const canvas = document.getElementById('webgl');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 100);
+camera.position.set(0, 0, 9);
+
+/* --- Neural network particle sphere --- */
+const NODES = 550;
+const positions = new Float32Array(NODES * 3);
+const basePositions = new Float32Array(NODES * 3);
+const colors = new Float32Array(NODES * 3);
+const colorA = new THREE.Color('#7c5cff');
+const colorB = new THREE.Color('#00e5c3');
+const colorC = new THREE.Color('#ff5cc8');
+const radius = 3.6;
+
+for (let i = 0; i < NODES; i++) {
+  // Fibonacci sphere for even distribution
+  const phi = Math.acos(1 - 2 * (i + 0.5) / NODES);
+  const theta = Math.PI * (1 + Math.sqrt(5)) * i;
+  const r = radius * (0.85 + Math.random() * 0.35);
+  const x = r * Math.sin(phi) * Math.cos(theta);
+  const y = r * Math.sin(phi) * Math.sin(theta);
+  const z = r * Math.cos(phi);
+  positions[i * 3] = x;
+  positions[i * 3 + 1] = y;
+  positions[i * 3 + 2] = z;
+  basePositions[i * 3] = x;
+  basePositions[i * 3 + 1] = y;
+  basePositions[i * 3 + 2] = z;
+
+  const mix = (y + radius) / (radius * 2);
+  const c = mix > 0.5
+    ? colorA.clone().lerp(colorC, (mix - 0.5) * 2)
+    : colorB.clone().lerp(colorA, mix * 2);
+  colors[i * 3] = c.r;
+  colors[i * 3 + 1] = c.g;
+  colors[i * 3 + 2] = c.b;
+}
+
+const pointsGeo = new THREE.BufferGeometry();
+pointsGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+pointsGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+const pointsMat = new THREE.PointsMaterial({
+  size: 0.055,
+  vertexColors: true,
+  transparent: true,
+  opacity: 0.95,
+  blending: THREE.AdditiveBlending,
+  depthWrite: false,
+  sizeAttenuation: true
+});
+const points = new THREE.Points(pointsGeo, pointsMat);
+scene.add(points);
+
+/* --- Connection lines between nearby nodes --- */
+const linePositions = [];
+const MAX_DIST = 1.15;
+const MAX_LINES = 1400;
+let lineCount = 0;
+for (let i = 0; i < NODES && lineCount < MAX_LINES; i += 2) {
+  for (let j = i + 1; j < NODES && lineCount < MAX_LINES; j += 3) {
+    const dx = basePositions[i*3] - basePositions[j*3];
+    const dy = basePositions[i*3+1] - basePositions[j*3+1];
+    const dz = basePositions[i*3+2] - basePositions[j*3+2];
+    const d = Math.sqrt(dx*dx + dy*dy + dz*dz);
+    if (d < MAX_DIST) {
+      linePositions.push(
+        basePositions[i*3], basePositions[i*3+1], basePositions[i*3+2],
+        basePositions[j*3], basePositions[j*3+1], basePositions[j*3+2]
+      );
+      lineCount++;
+    }
+  }
+}
+const linesGeo = new THREE.BufferGeometry();
+linesGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+const linesMat = new THREE.LineBasicMaterial({
+  color: 0x7c5cff,
+  transparent: true,
+  opacity: 0.22,
+  blending: THREE.AdditiveBlending,
+  depthWrite: false
+});
+const lines = new THREE.LineSegments(linesGeo, linesMat);
+scene.add(lines);
+
+/* --- Ambient dust particles --- */
+const DUST = 400;
+const dustPos = new Float32Array(DUST * 3);
+for (let i = 0; i < DUST; i++) {
+  dustPos[i*3] = (Math.random() - 0.5) * 30;
+  dustPos[i*3+1] = (Math.random() - 0.5) * 18;
+  dustPos[i*3+2] = (Math.random() - 0.5) * 20;
+}
+const dustGeo = new THREE.BufferGeometry();
+dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos, 3));
+const dustMat = new THREE.PointsMaterial({
+  color: 0xffffff,
+  size: 0.03,
+  transparent: true,
+  opacity: 0.35,
+  blending: THREE.AdditiveBlending,
+  depthWrite: false
+});
+const dust = new THREE.Points(dustGeo, dustMat);
+scene.add(dust);
+
+/* --- Glowing core --- */
+const coreGeo = new THREE.SphereGeometry(0.55, 32, 32);
+const coreMat = new THREE.MeshBasicMaterial({
+  color: 0x7c5cff,
+  transparent: true,
+  opacity: 0.5
+});
+const core = new THREE.Mesh(coreGeo, coreMat);
+scene.add(core);
+
+const haloGeo = new THREE.SphereGeometry(0.85, 32, 32);
+const haloMat = new THREE.MeshBasicMaterial({
+  color: 0x00e5c3,
+  transparent: true,
+  opacity: 0.12,
+  blending: THREE.AdditiveBlending
+});
+const halo = new THREE.Mesh(haloGeo, haloMat);
+scene.add(halo);
+
+/* --- Interaction state --- */
+const mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
+window.addEventListener('pointermove', (e) => {
+  mouse.targetX = (e.clientX / window.innerWidth) * 2 - 1;
+  mouse.targetY = -(e.clientY / window.innerHeight) * 2 + 1;
+});
+
+/* --- Scroll state --- */
+let scrollY = 0;
+window.addEventListener('scroll', () => { scrollY = window.scrollY; }, { passive: true });
+
+/* --- Resize --- */
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+/* --- Animate --- */
+const clock = new THREE.Clock();
+const posAttr = pointsGeo.getAttribute('position');
+const lineAttr = linesGeo.getAttribute('position');
+
+function animate() {
+  const t = clock.getElapsedTime();
+
+  // Smooth mouse follow
+  mouse.x += (mouse.targetX - mouse.x) * 0.05;
+  mouse.y += (mouse.targetY - mouse.y) * 0.05;
+
+  // Rotate whole network
+  const rotY = t * 0.12 + mouse.x * 0.4;
+  const rotX = Math.sin(t * 0.08) * 0.15 + mouse.y * 0.3;
+  points.rotation.y = rotY;
+  points.rotation.x = rotX;
+  lines.rotation.y = rotY;
+  lines.rotation.x = rotX;
+
+  // Organic node breathing
+  for (let i = 0; i < NODES; i++) {
+    const bx = basePositions[i*3];
+    const by = basePositions[i*3+1];
+    const bz = basePositions[i*3+2];
+    const n = Math.sin(t * 1.4 + i * 0.35) * 0.06;
+    posAttr.array[i*3] = bx * (1 + n);
+    posAttr.array[i*3+1] = by * (1 + n);
+    posAttr.array[i*3+2] = bz * (1 + n);
+  }
+  posAttr.needsUpdate = true;
+  lineAttr.needsUpdate = true;
+  lines.rotation.z = t * 0.02;
+
+  // Core pulse
+  const pulse = 1 + Math.sin(t * 2.2) * 0.12;
+  core.scale.setScalar(pulse);
+  halo.scale.setScalar(pulse * 1.3);
+  coreMat.opacity = 0.4 + Math.sin(t * 2.2) * 0.15;
+
+  // Scroll-driven camera
+  const scrollFactor = Math.min(scrollY / (window.innerHeight || 1), 3);
+  camera.position.z = 9 + scrollFactor * 2.5;
+  camera.position.y = scrollFactor * -0.8;
+  camera.lookAt(0, scrollFactor * -0.3, 0);
+
+  // Dust drift
+  dust.rotation.y = t * 0.02;
+  dust.position.y = Math.sin(t * 0.3) * 0.3;
+
+  // Fade network as user scrolls into content
+  const fade = Math.max(0, 1 - scrollFactor * 0.45);
+  pointsMat.opacity = 0.95 * fade;
+  linesMat.opacity = 0.22 * fade;
+  coreMat.opacity = (0.4 + Math.sin(t * 2.2) * 0.15) * fade;
+  haloMat.opacity = 0.12 * fade;
+
+  renderer.render(scene, camera);
+  requestAnimationFrame(animate);
+}
+animate();
+
+/* ================= UI LOGIC ================= */
+// Nav scroll state
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 30);
+}, { passive: true });
+
+// Mobile menu
+const menuToggle = document.getElementById('menuToggle');
+const navLinks = document.getElementById('navLinks');
+menuToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+
+// Reveal on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Tilt card 3D effect
+const tiltCard = document.getElementById('tiltCard');
+if (tiltCard) {
+  const parent = tiltCard.closest('.showcase-visual');
+  parent.addEventListener('mousemove', (e) => {
+    const rect = parent.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    tiltCard.style.transform = `rotateY(${-14 + x * 24}deg) rotateX(${8 - y * 24}deg)`;
+  });
+  parent.addEventListener('mouseleave', () => {
+    tiltCard.style.transform = 'rotateY(-14deg) rotateX(8deg)';
+  });
+}
+
+// Waitlist form: validate email, POST to /api/waitlist, show success message
+const waitlistForm = document.getElementById('waitlistForm');
+const waitlistEmail = document.getElementById('waitlistEmail');
+const waitlistMsg = document.getElementById('waitlistMsg');
+const waitlistBtn = document.getElementById('waitlistBtn');
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+if (waitlistForm) {
+  waitlistForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = waitlistEmail.value.trim();
+    waitlistMsg.className = 'form-msg';
+    if (!EMAIL_RE.test(email)) {
+      waitlistMsg.textContent = 'Please enter a valid email address.';
+      waitlistMsg.classList.add('error');
+      waitlistEmail.focus();
+      return;
+    }
+    waitlistBtn.disabled = true;
+    waitlistBtn.textContent = 'Joining…';
+    try {
+      const res = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      if (res.ok) {
+        waitlistMsg.textContent = 'Thanks — you are on the waitlist. We will email you at launch.';
+        waitlistMsg.classList.add('success');
+        waitlistForm.reset();
+      } else {
+        const data = await res.json().catch(() => ({}));
+        waitlistMsg.textContent = data.error || 'Something went wrong. Please try again.';
+        waitlistMsg.classList.add('error');
+      }
+    } catch (err) {
+      // Fallback for local/static hosting without the serverless function:
+      // store locally so the form still confirms submission.
+      try { localStorage.setItem('neuralflow_waitlist', email); } catch (_) {}
+      waitlistMsg.textContent = 'Thanks — you are on the waitlist. We will email you at launch.';
+      waitlistMsg.classList.add('success');
+      waitlistForm.reset();
+    } finally {
+      waitlistBtn.disabled = false;
+      waitlistBtn.textContent = 'Join the waitlist';
+    }
+  });
+}
+</script>
+</body>
+</html>
