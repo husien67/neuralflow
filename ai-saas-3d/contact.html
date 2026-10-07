@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Contact — NeuralFlow (Early Access)</title>
+<meta name="description" content="Contact NeuralFlow. We are in development and not yet launched. Email us for questions about the waitlist, launch, privacy, or billing." />
+<meta property="og:title" content="Contact — NeuralFlow" />
+<meta property="og:description" content="Email us with questions about the NeuralFlow waitlist and launch." />
+<meta property="og:type" content="website" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+:root{--bg:#05060a;--border:rgba(255,255,255,.08);--text:#e8eaf2;--muted:#8b90a5;--accent:#7c5cff;--accent-2:#00e5c3}
+*{margin:0;padding:0;box-sizing:border-box}body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;line-height:1.7}
+h1,.logo{font-family:'Space Grotesk',sans-serif}
+.wrap{max-width:720px;margin:0 auto;padding:130px 24px 80px;text-align:center}
+a{color:#b8a5ff}.topnav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:16px 5vw;background:rgba(5,6,10,.85);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+.logo{color:#fff;text-decoration:none;font-weight:700;display:flex;gap:10px;align-items:center}.logo-mark{width:26px;height:26px;border-radius:8px;background:conic-gradient(from 210deg,#7c5cff,#00e5c3,#ff5cc8,#7c5cff)}
+.topnav nav a{color:var(--muted);text-decoration:none;margin-left:22px;font-size:.9rem}.topnav nav a:hover{color:#fff}
+h1{font-size:2.2rem;margin-bottom:10px}.sub{color:var(--muted);margin-bottom:28px}
+.card{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:18px;padding:36px 30px;margin-bottom:22px}
+.email-big{font-size:1.15rem;font-weight:600}
+form{display:flex;flex-direction:column;gap:12px;text-align:left;margin-top:20px}
+label{font-size:.85rem;color:var(--muted)}input,textarea{padding:13px 15px;border-radius:10px;border:1px solid var(--border);background:rgba(0,0,0,.4);color:#fff;font-size:.95rem;font-family:'Inter',sans-serif}input:focus,textarea:focus{outline:none;border-color:var(--accent)}
+button{background:linear-gradient(135deg,var(--accent),#5a3df0);color:#fff;border:none;border-radius:10px;padding:13px;font-weight:600;font-size:.95rem;cursor:pointer}
+.notice{border:1px solid rgba(0,229,195,.3);background:rgba(0,229,195,.06);border-radius:12px;padding:14px 18px;margin:0 0 22px;font-size:.9rem;color:#c5c9d8}
+.msg{min-height:1.4em;font-size:.9rem;margin-top:10px}.msg.error{color:#ff7a9e}.msg.success{color:var(--accent-2)}
+footer{border-top:1px solid var(--border);padding:34px 5vw;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;color:var(--muted);font-size:.85rem}
+footer a{color:var(--muted);text-decoration:none;margin-left:18px}footer a:hover{color:#fff}
+</style>
+</head>
+<body>
+<div class="topnav">
+  <a href="/" class="logo"><span class="logo-mark"></span>NeuralFlow</a>
+  <nav><a href="/#features">Features</a><a href="/#pricing">Pricing</a><a href="/#waitlist">Waitlist</a><a href="/contact.html">Contact</a></nav>
+</div>
+<div class="wrap">
+  <h1>Contact us</h1>
+  <p class="sub">Operated by <strong>[Your Legal Name]</strong> ([Your Country]). We reply within a few business days.</p>
+  <div class="notice"><strong>Action required:</strong> replace <strong>[you@example.com]</strong>, <strong>[Your Legal Name]</strong>, and <strong>[Your Country]</strong> with your real details before submitting to Paddle.</div>
+  <div class="card">
+    <div style="color:var(--muted);font-size:.85rem;margin-bottom:6px">EMAIL</div>
+    <a class="email-big" href="mailto:[you@example.com]">[you@example.com]</a>
+    <form id="contactForm" novalidate>
+      <div><label for="cName">Name</label><input id="cName" name="name" type="text" placeholder="Your name" autocomplete="name" style="width:100%;margin-top:6px" /></div>
+      <div><label for="cEmail">Email</label><input id="cEmail" name="email" type="email" placeholder="you@example.com" autocomplete="email" required style="width:100%;margin-top:6px" /></div>
+      <div><label for="cMsg">Message</label><textarea id="cMsg" name="message" rows="5" placeholder="How can we help?" required style="width:100%;margin-top:6px"></textarea></div>
+      <button type="submit" id="cBtn">Send message</button>
+      <div class="msg" id="cStatus" role="status" aria-live="polite"></div>
+    </form>
+  </div>
+  <p style="color:var(--muted);font-size:.88rem">For privacy requests, use subject “Privacy request”. For refunds (once paid plans launch), use subject “Refund request”. See <a href="/privacy.html">Privacy</a>, <a href="/terms.html">Terms</a>, <a href="/refund.html">Refunds</a>.</p>
+</div>
+<footer>
+  <div>© 2026 [Your Legal Name]. All rights reserved.</div>
+  <div><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="/refund.html">Refunds</a><a href="/contact.html">Contact</a></div>
+</footer>
+<script>
+const form = document.getElementById('contactForm');
+const status = document.getElementById('cStatus');
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const email = document.getElementById('cEmail').value.trim();
+  const msg = document.getElementById('cMsg').value.trim();
+  const name = document.getElementById('cName').value.trim();
+  status.className = 'msg';
+  if (!EMAIL_RE.test(email)) { status.textContent = 'Please enter a valid email address.'; status.classList.add('error'); return; }
+  if (msg.length < 5) { status.textContent = 'Please enter a message.'; status.classList.add('error'); return; }
+  const to = '[you@example.com]';
+  const subject = encodeURIComponent('Website contact from ' + (name || email));
+  const body = encodeURIComponent('From: ' + name + ' <' + email + '>\n\n' + msg);
+  window.location.href = 'mailto:' + to + '?subject=' + subject + '&body=' + body;
+  status.textContent = 'Opening your email app to send the message. Alternatively, email us directly at ' + to + '.';
+  status.classList.add('success');
+});
+</script>
+</body>
+</html>
