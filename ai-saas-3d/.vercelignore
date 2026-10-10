@@ -1,0 +1,4 @@
+# Vercel deploy exclusion.
+# The Pro Pack source file must NOT be publicly reachable on the website.
+# It is uploaded separately to the payment provider (Creem) as the paid download.
+pro-pack/

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Prompt Toolkit (Free) — NeuralFlow</title>
+<meta name="description" content="Free NeuralFlow Prompt Toolkit: fill in role, task, context, audience, tone, output format and constraints, preview your structured prompt, copy it, and save your own prompts in your browser. Includes 12 free templates." />
+<meta property="og:title" content="Prompt Toolkit (Free) — NeuralFlow" />
+<meta property="og:description" content="Build structured AI prompts in your browser. 7 guided fields, live preview, copy button, 12 free templates, browser saving. No signup." />
+<meta property="og:type" content="website" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+:root{--bg:#05060a;--panel:rgba(255,255,255,.03);--border:rgba(255,255,255,.08);--text:#e8eaf2;--muted:#8b90a5;--accent:#7c5cff;--accent2:#00e5c3;--accent3:#ff5cc8}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:radial-gradient(ellipse at 15% 0%,rgba(124,92,255,.13),transparent 55%),var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;line-height:1.6}
+h1,h2,h3,.logo{font-family:'Space Grotesk',sans-serif}
+a{color:#b8a5ff}
+.topnav{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:14px 5vw;background:rgba(5,6,10,.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+.logo{color:#fff;text-decoration:none;font-weight:700;display:flex;gap:10px;align-items:center}
+.logo-mark{width:26px;height:26px;border-radius:8px;background:conic-gradient(from 210deg,#7c5cff,#00e5c3,#ff5cc8,#7c5cff)}
+.topnav nav a{color:var(--muted);text-decoration:none;margin-left:20px;font-size:.9rem}
+.topnav nav a:hover{color:#fff}
+.wrap{max-width:1180px;margin:0 auto;padding:40px 24px 70px}
+.page-head{text-align:center;max-width:680px;margin:10px auto 34px}
+.page-head h1{font-size:clamp(1.9rem,4.5vw,2.8rem);letter-spacing:-.02em;margin-bottom:10px}
+.page-head p{color:var(--muted)}
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:28px}
+.card h2{font-size:1.15rem;margin-bottom:6px}
+.card .hint{color:var(--muted);font-size:.87rem;margin-bottom:18px}
+.field{margin-bottom:16px}
+label{display:block;font-size:.85rem;font-weight:600;margin-bottom:6px}
+label small{color:var(--muted);font-weight:400}
+input[type=text],textarea,select{width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--border);background:rgba(0,0,0,.4);color:#fff;font-size:.93rem;font-family:'Inter',sans-serif}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)}
+textarea{resize:vertical;min-height:74px}
+select option{background:#0a0b12}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border-radius:10px;font-size:.9rem;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;border:1px solid transparent;text-decoration:none;transition:transform .15s,background .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn-primary{background:linear-gradient(135deg,var(--accent),#5a3df0);color:#fff}
+.btn-ghost{background:transparent;color:var(--text);border-color:var(--border)}
+.btn-danger{background:transparent;color:#ff8ba3;border-color:rgba(255,122,158,.4)}
+.preview{white-space:pre-wrap;background:rgba(0,0,0,.45);border:1px solid var(--border);border-radius:12px;padding:18px;font-size:.9rem;min-height:280px;color:#dfe3f0}
+.status{min-height:1.5em;font-size:.87rem;margin-top:10px;color:var(--accent2)}
+.status.error{color:#ff7a9e}
+.templates{margin-top:26px}
+.tpl-filter{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 16px}
+.tpl-filter button{padding:8px 14px;border-radius:999px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:.82rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif}
+.tpl-filter button[aria-pressed="true"]{color:#fff;border-color:var(--accent);background:rgba(124,92,255,.15)}
+.tpl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.tpl{text-align:left;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;color:var(--text);font-family:'Inter',sans-serif;transition:border-color .2s,transform .2s}
+.tpl:hover{border-color:rgba(124,92,255,.5);transform:translateY(-2px)}
+.tpl strong{display:block;font-size:.9rem;margin-bottom:4px}
+.tpl span.cat{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--accent2)}
+.tpl p{font-size:.82rem;color:var(--muted);margin-top:6px}
+.saved{margin-top:26px}
+.saved-item{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:10px;background:rgba(0,0,0,.3)}
+.saved-item strong{font-size:.9rem;display:block}
+.saved-item small{color:var(--muted);font-size:.78rem}
+.saved-item .actions{display:flex;gap:8px;flex-shrink:0}
+.saved-item .actions button{padding:8px 12px;font-size:.8rem;border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif}
+.load-btn{background:rgba(124,92,255,.15);border:1px solid rgba(124,92,255,.5);color:#fff}
+.del-btn{background:transparent;border:1px solid rgba(255,122,158,.4);color:#ff8ba3}
+.probox{margin-top:26px;text-align:center;padding:36px 28px;border-radius:20px;background:linear-gradient(180deg,rgba(124,92,255,.12),rgba(255,255,255,.02));border:1px solid rgba(124,92,255,.4)}
+.probox h2{font-size:1.4rem;margin-bottom:8px}
+.probox p{color:var(--muted);font-size:.92rem;max-width:560px;margin:0 auto 20px}
+.probox p a{color:#b8a5ff}
+footer{border-top:1px solid var(--border);padding:34px 5vw;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;color:var(--muted);font-size:.85rem}
+footer a{color:var(--muted);text-decoration:none;margin-left:18px}
+footer a:hover{color:#fff}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.row2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="topnav">
+  <a href="/" class="logo"><span class="logo-mark"></span>NeuralFlow</a>
+  <nav><a href="/">Home</a><a href="/app">Toolkit</a><a href="/#pricing">Pricing</a><a href="/contact">Contact</a></nav>
+</div>
+
+<div class="wrap">
+  <div class="page-head">
+    <h1>Prompt Toolkit <span style="color:var(--accent2)">— free</span></h1>
+    <p>Fill in the fields below. Your structured prompt builds live on the right. Copy it and paste it into any AI assistant. Everything runs in this page — nothing is uploaded.</p>
+  </div>
+
+  <div class="layout">
+    <div class="card" aria-labelledby="builderH">
+      <h2 id="builderH">1 · Build your prompt</h2>
+      <p class="hint">All fields are optional, but the more you fill in, the better your result. Start from a template below or write your own.</p>
+      <form id="promptForm" onsubmit="return false">
+        <div class="field">
+          <label for="fRole">Role <small>— who should the AI act as?</small></label>
+          <input type="text" id="fRole" name="role" placeholder="e.g. An experienced email copywriter" autocomplete="off" />
+        </div>
+        <div class="field">
+          <label for="fTask">Task <small>— what should it do?</small></label>
+          <textarea id="fTask" name="task" placeholder="e.g. Write a launch email for my new template pack"></textarea>
+        </div>
+        <div class="field">
+          <label for="fContext">Context <small>— background the AI needs</small></label>
+          <textarea id="fContext" name="context" placeholder="e.g. Product: 100 prompt templates for freelancers, price $9, audience is busy solo founders"></textarea>
+        </div>
+        <div class="field">
+          <label for="fAudience">Audience <small>— who is the output for?</small></label>
+          <input type="text" id="fAudience" name="audience" placeholder="e.g. Solo founders who have never bought templates before" autocomplete="off" />
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label for="fTone">Tone</label>
+            <select id="fTone" name="tone">
+              <option value="">— Choose —</option>
+              <option>Neutral</option>
+              <option>Friendly</option>
+              <option>Professional</option>
+              <option>Persuasive</option>
+              <option>Playful</option>
+              <option>Formal</option>
+              <option>Direct and concise</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="fFormat">Output format</label>
+            <select id="fFormat" name="format">
+              <option value="">— Choose —</option>
+              <option>Paragraph</option>
+              <option>Bullet list</option>
+              <option>Numbered steps</option>
+              <option>Table</option>
+              <option>Email draft</option>
+              <option>Code with explanation</option>
+              <option>Short summary</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="fConstraints">Constraints <small>— length, things to avoid, must-include</small></label>
+          <textarea id="fConstraints" name="constraints" placeholder="e.g. Under 200 words. No hype words like 'revolutionary'. Include one clear call to action."></textarea>
+        </div>
+        <div class="btnrow">
+          <button type="button" class="btn btn-ghost" id="clearBtn">Clear</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="card" aria-labelledby="previewH">
+      <h2 id="previewH">2 · Preview &amp; copy</h2>
+      <p class="hint">This preview updates as you type.</p>
+      <div class="preview" id="preview" aria-live="polite" tabindex="0">Fill in at least the Task field to generate your prompt…</div>
+      <div class="btnrow" style="margin-top:14px">
+        <button type="button" class="btn btn-primary" id="copyBtn">Copy prompt</button>
+      </div>
+      <div class="status" id="copyStatus" role="status" aria-live="polite"></div>
+      <hr style="border:none;border-top:1px solid var(--border);margin:20px 0" />
+      <h2 style="font-size:1rem">3 · Save on this device</h2>
+      <p class="hint">Saved prompts stay in your browser (localStorage). No account, nothing sent anywhere.</p>
+      <div class="field">
+        <label for="saveName">Name for this prompt</label>
+        <input type="text" id="saveName" placeholder="e.g. Launch email v1" autocomplete="off" />
+      </div>
+      <div class="btnrow">
+        <button type="button" class="btn btn-ghost" id="saveBtn">Save current prompt</button>
+      </div>
+      <div class="status" id="saveStatus" role="status" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <div class="card templates" aria-labelledby="tplH">
+    <h2 id="tplH">Free template library — 12 starters</h2>
+    <p class="hint">Click any template to fill the form. Then edit it and copy.</p>
+    <div class="tpl-filter" role="group" aria-label="Filter templates by category">
+      <button type="button" data-filter="all" aria-pressed="true">All</button>
+      <button type="button" data-filter="writing" aria-pressed="false">Writing</button>
+      <button type="button" data-filter="coding" aria-pressed="false">Coding</button>
+      <button type="button" data-filter="marketing" aria-pressed="false">Marketing</button>
+      <button type="button" data-filter="study" aria-pressed="false">Study</button>
+      <button type="button" data-filter="business" aria-pressed="false">Business</button>
+    </div>
+    <div class="tpl-grid" id="tplGrid"></div>
+  </div>
+
+  <div class="card saved" aria-labelledby="savedH">
+    <h2 id="savedH">Your saved prompts (this browser only)</h2>
+    <p class="hint" id="savedHint">Nothing saved yet. Build a prompt above and click “Save current prompt”.</p>
+    <div id="savedList"></div>
+  </div>
+
+  <div class="probox" id="pro">
+    <h2>Want 100 more? Pro Prompt Pack — $9 one-time</h2>
+    <p>100 additional professional templates (writing, coding, marketing, study, business, productivity) in a downloadable Markdown file. One-time payment, instant digital delivery via Creem. Personal license. Covered by our <a href="/refund">14-day refund policy</a>.</p>
+    <a href="/contact" class="btn btn-primary" id="buyProApp" style="font-size:1rem;padding:14px 30px">Buy Pro Pack — $9</a>
+    <p class="hint" id="buyProAppNote" style="margin-top:12px"></p>
+  </div>
+</div>
+
+<footer>
+  <div>© 2026 HUSAIN AMEER. All rights reserved.</div>
+  <div><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/refund">Refunds</a><a href="/contact">Contact</a><a href="/">Home</a></div>
+</footer>
+
+<script src="/config.js"></script>
+<script>
+(function(){
+  "use strict";
+  var $ = function(id){ return document.getElementById(id); };
+  var fields = { role: $('fRole'), task: $('fTask'), context: $('fContext'), audience: $('fAudience'), tone: $('fTone'), format: $('fFormat'), constraints: $('fConstraints') };
+  var preview = $('preview'), copyBtn = $('copyBtn'), copyStatus = $('copyStatus');
+  var saveName = $('saveName'), saveBtn = $('saveBtn'), saveStatus = $('saveStatus');
+  var tplGrid = $('tplGrid'), savedList = $('savedList'), savedHint = $('savedHint');
+  var STORE_KEY = 'neuralflow_prompts_v1';
+
+  var TEMPLATES = [
+    { cat:'writing', title:'Blog post outline', desc:'Turn a rough topic into a structured article outline.', data:{ role:'An experienced blog editor', task:'Create a detailed outline for a blog post about [TOPIC]', context:'Goal: help beginners understand [TOPIC]. Target length: 1200 words.', audience:'Beginners in [FIELD]', tone:'Friendly', format:'Numbered steps', constraints:'Use plain language. Include an intro hook, 5 main sections with 2-3 sub-points each, and a conclusion with one next step.' } },
+    { cat:'writing', title:'Rewrite to be clearer', desc:'Paste confusing text and get a clean rewrite.', data:{ role:'A professional proofreader', task:'Rewrite the text below so it is clearer and easier to read, keeping the original meaning', context:'Text to rewrite: [PASTE YOUR TEXT HERE]', audience:'General readers', tone:'Neutral', format:'Paragraph', constraints:'Do not add new facts. Keep it under the same length. List the 3 biggest changes at the end.' } },
+    { cat:'coding', title:'Fix my bug', desc:'Get a diagnosis and fix for an error.', data:{ role:'A senior software engineer', task:'Help me fix this bug: [DESCRIBE WHAT SHOULD HAPPEN vs WHAT HAPPENS]', context:'Language/stack: [E.G. JavaScript + React]. Error message: [PASTE ERROR]. Relevant code: [PASTE CODE]', audience:'A developer who knows the basics', tone:'Direct and concise', format:'Code with explanation', constraints:'Explain the root cause first, then show the fixed code, then 2 ways to avoid this bug in future.' } },
+    { cat:'coding', title:'Explain this code', desc:'Understand unfamiliar code line by line.', data:{ role:'A patient programming tutor', task:'Explain what this code does, step by step', context:'Code: [PASTE CODE]. Language: [LANGUAGE]', audience:'A junior developer', tone:'Friendly', format:'Bullet list', constraints:'Avoid jargon or define it when used. End with a one-sentence summary of the overall purpose.' } },
+    { cat:'coding', title:'Write a function', desc:'Generate a clean function from a spec.', data:{ role:'A senior backend engineer', task:'Write a function that [WHAT IT SHOULD DO, INPUTS, OUTPUTS]', context:'Language: [LANGUAGE]. Constraints of the project: [E.G. no external libraries]', audience:'Production codebase reviewers', tone:'Professional', format:'Code with explanation', constraints:'Include input validation, handle edge cases, add short comments, and give 2 example calls with expected output.' } },
+    { cat:'marketing', title:'Product description', desc:'A product page blurb that sells honestly.', data:{ role:'An e-commerce copywriter who avoids hype', task:'Write a product description for [PRODUCT NAME]', context:'Key features: [LIST 3-5]. Price: [PRICE]. What makes it different: [ONE SENTENCE]', audience:'[TARGET BUYER]', tone:'Persuasive', format:'Paragraph', constraints:'Under 150 words. No words like revolutionary or game-changing. End with one clear call to action.' } },
+    { cat:'marketing', title:'Social media captions', desc:'5 captions for one announcement.', data:{ role:'A social media manager', task:'Write 5 social media captions announcing [NEWS]', context:'Brand voice: [E.G. friendly and practical]. Platform: [Instagram/X/LinkedIn]. Link to include: [URL]', audience:'Existing followers', tone:'Playful', format:'Bullet list', constraints:'Each caption under 280 characters. Vary the hook. Include exactly 3 relevant hashtags per caption.' } },
+    { cat:'marketing', title:'Email newsletter draft', desc:'A newsletter issue from bullet points.', data:{ role:'A newsletter editor', task:'Turn these rough notes into a newsletter draft: [PASTE BULLET POINTS]', context:'Newsletter name and audience: [E.G. weekly tips for freelancers]', audience:'Subscribed readers', tone:'Friendly', format:'Email draft', constraints:'Subject line under 50 characters. Keep body under 300 words. One main idea, one call to action.' } },
+    { cat:'study', title:'Personal study plan', desc:'A realistic week-by-week plan.', data:{ role:'A study coach', task:'Create a 4-week study plan for [EXAM OR SKILL]', context:'I can study [X] hours per week. My current level: [BEGINNER/INTERMEDIATE]. My deadline: [DATE]', audience:'Myself, a busy learner', tone:'Friendly', format:'Table', constraints:'Columns: week, goals, daily tasks, how to check progress. Keep sessions under 60 minutes. Include one rest day per week.' } },
+    { cat:'study', title:'Explain like a beginner', desc:'Any topic explained simply with examples.', data:{ role:'A teacher skilled at simple explanations', task:'Explain [TOPIC] to me as if I am a complete beginner', context:'What I already know: [ONE SENTENCE]. Why I need this: [E.G. upcoming interview]', audience:'A beginner in [FIELD]', tone:'Friendly', format:'Paragraph', constraints:'Use one everyday analogy. Give 2 concrete examples. End with 3 questions I can use to test myself.' } },
+    { cat:'business', title:'Meeting notes to actions', desc:'Turn messy notes into decisions and owners.', data:{ role:'An executive assistant', task:'Turn these rough meeting notes into a clean summary with action items: [PASTE NOTES]', context:'Project: [NAME]. Attendees: [NAMES]. Date: [DATE]', audience:'The project team', tone:'Professional', format:'Bullet list', constraints:'Sections: Decisions, Action items (with owner + deadline), Open questions. Keep under 250 words.' } },
+    { cat:'business', title:'Validate a business idea', desc:'Stress-test an idea before building.', data:{ role:'A brutally honest startup advisor', task:'Evaluate this business idea and point out the biggest risks: [DESCRIBE IDEA IN 3 SENTENCES]', context:'My budget: [AMOUNT]. My skills: [LIST]. Target market: [WHO, WHERE]', audience:'A solo founder', tone:'Direct and concise', format:'Numbered steps', constraints:'Give a 1-10 score with reasons, top 3 risks, the cheapest way to test demand in 7 days, and a clear go/no-go recommendation.' } }
+  ];
+
+  function values(){ return { role: fields.role.value.trim(), task: fields.task.value.trim(), context: fields.context.value.trim(), audience: fields.audience.value.trim(), tone: fields.tone.value, format: fields.format.value, constraints: fields.constraints.value.trim() }; }
+  function buildPrompt(v){
+    if (!v.task && !v.role && !v.context) return '';
+    var parts = [];
+    if (v.role) parts.push('You are ' + v.role + '.');
+    if (v.task) parts.push('Task: ' + v.task);
+    if (v.context) parts.push('Context: ' + v.context);
+    if (v.audience) parts.push('Audience: ' + v.audience + '.');
+    if (v.tone) parts.push('Tone: ' + v.tone + '.');
+    if (v.format) parts.push('Output format: ' + v.format + '.');
+    if (v.constraints) parts.push('Constraints:\n' + v.constraints);
+    return parts.join('\n\n');
+  }
+  function refresh(){
+    var out = buildPrompt(values());
+    preview.textContent = out || 'Fill in at least the Task field to generate your prompt…';
+  }
+  Object.keys(fields).forEach(function(k){ fields[k].addEventListener('input', refresh); fields[k].addEventListener('change', refresh); });
+
+  $('clearBtn').addEventListener('click', function(){
+    Object.keys(fields).forEach(function(k){ fields[k].value=''; });
+    saveName.value=''; copyStatus.textContent=''; saveStatus.textContent='';
+    refresh(); fields.role.focus();
+  });
+
+  copyBtn.addEventListener('click', function(){
+    var text = buildPrompt(values());
+    copyStatus.className = 'status';
+    if (!text) { copyStatus.textContent = 'Nothing to copy yet — fill in the Task field first.'; copyStatus.classList.add('error'); return; }
+    function done(){ copyStatus.textContent = 'Copied! Paste it into any AI assistant.'; }
+    function fail(){ copyStatus.textContent = 'Copy failed — select the preview text and press Ctrl+C / Cmd+C.'; copyStatus.classList.add('error'); }
+    if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(text).then(done, fail); }
+    else { var ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy')?done():fail(); }catch(e){ fail(); } document.body.removeChild(ta); }
+  });
+
+  function renderTemplates(filter){
+    tplGrid.innerHTML='';
+    TEMPLATES.filter(function(t){ return filter==='all'||t.cat===filter; }).forEach(function(t){
+      var b=document.createElement('button');
+      b.type='button'; b.className='tpl'; b.setAttribute('data-cat', t.cat);
+      var c=document.createElement('span'); c.className='cat'; c.textContent=t.cat;
+      var s=document.createElement('strong'); s.textContent=t.title;
+      var p=document.createElement('p'); p.textContent=t.desc;
+      b.appendChild(c); b.appendChild(s); b.appendChild(p);
+      b.addEventListener('click', function(){
+        fields.role.value=t.data.role; fields.task.value=t.data.task; fields.context.value=t.data.context;
+        fields.audience.value=t.data.audience; fields.tone.value=t.data.tone; fields.format.value=t.data.format;
+        fields.constraints.value=t.data.constraints;
+        copyStatus.textContent=''; saveStatus.textContent='';
+        refresh();
+        document.querySelector('.layout').scrollIntoView({behavior:'smooth'});
+        fields.task.focus();
+      });
+      tplGrid.appendChild(b);
+    });
+  }
+  renderTemplates('all');
+  document.querySelectorAll('.tpl-filter button').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('.tpl-filter button').forEach(function(o){ o.setAttribute('aria-pressed','false'); });
+      btn.setAttribute('aria-pressed','true');
+      renderTemplates(btn.getAttribute('data-filter'));
+    });
+  });
+
+  function loadSaved(){ try{ return JSON.parse(localStorage.getItem(STORE_KEY))||[]; }catch(e){ return []; } }
+  function persist(list){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(list)); return true; }catch(e){ return false; } }
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+  function renderSaved(){
+    var list = loadSaved();
+    savedList.innerHTML='';
+    if (!list.length){ savedHint.textContent='Nothing saved yet. Build a prompt above and click “Save current prompt”.'; return; }
+    savedHint.textContent = list.length + ' saved prompt' + (list.length>1?'s':'') + ' — stored only in this browser.';
+    list.slice().reverse().forEach(function(item){
+      var div=document.createElement('div'); div.className='saved-item';
+      var info=document.createElement('div');
+      var st=document.createElement('strong'); st.textContent=item.name;
+      var sm=document.createElement('small'); sm.textContent=new Date(item.date).toLocaleString() + ' · ' + item.preview.slice(0,80) + (item.preview.length>80?'…':'');
+      info.appendChild(st); info.appendChild(sm);
+      var acts=document.createElement('div'); acts.className='actions';
+      var lb=document.createElement('button'); lb.type='button'; lb.className='load-btn'; lb.textContent='Load';
+      lb.setAttribute('aria-label','Load saved prompt '+item.name);
+      lb.addEventListener('click', function(){
+        fields.role.value=item.data.role||''; fields.task.value=item.data.task||''; fields.context.value=item.data.context||'';
+        fields.audience.value=item.data.audience||''; fields.tone.value=item.data.tone||''; fields.format.value=item.data.format||'';
+        fields.constraints.value=item.data.constraints||'';
+        refresh(); window.scrollTo({top:0,behavior:'smooth'});
+      });
+      var db=document.createElement('button'); db.type='button'; db.className='del-btn'; db.textContent='Delete';
+      db.setAttribute('aria-label','Delete saved prompt '+item.name);
+      db.addEventListener('click', function(){
+        var cur=loadSaved().filter(function(x){ return x.id!==item.id; });
+        persist(cur); renderSaved();
+        saveStatus.textContent='Deleted “'+item.name+'”.';
+      });
+      acts.appendChild(lb); acts.appendChild(db);
+      div.appendChild(info); div.appendChild(acts);
+      savedList.appendChild(div);
+    });
+  }
+  renderSaved();
+
+  saveBtn.addEventListener('click', function(){
+    saveStatus.className='status';
+    var v=values(), text=buildPrompt(v);
+    if (!text){ saveStatus.textContent='Build a prompt first (at least the Task field).'; saveStatus.classList.add('error'); return; }
+    var name=(saveName.value||'').trim() || (v.task.slice(0,40) + (v.task.length>40?'…':''));
+    var list=loadSaved();
+    list.push({ id:'p'+Date.now(), name:name, date:new Date().toISOString(), data:v, preview:text });
+    if (persist(list)){ saveStatus.textContent='Saved “'+name+'” on this device.'; saveName.value=''; renderSaved(); }
+    else { saveStatus.textContent='Could not save — browser storage is unavailable.'; saveStatus.classList.add('error'); }
+  });
+
+  var buyBtn=$('buyProApp'), buyNote=$('buyProAppNote');
+  if (typeof CREEM_CHECKOUT_URL==='undefined' || !CREEM_CHECKOUT_URL || CREEM_CHECKOUT_URL.indexOf('CREEM_CHECKOUT_URL')!==-1){
+    buyBtn.setAttribute('href','/contact');
+    buyNote.textContent='Checkout is being connected — questions? Email hessan.amer91@gmail.com.';
+  } else { buyBtn.setAttribute('href', CREEM_CHECKOUT_URL); }
+
+  refresh();
+})();
+</script>
+</body>
+</html>
