@@ -5,4 +5,5 @@
  * The Buy buttons on index.html and app.html read this constant at runtime.
  * Until you fill it in, the buttons show a "checkout coming soon" notice.
  */
-const CREEM_CHECKOUT_URL = "CREEM_CHECKOUT_URL_PLACEHOLDER";
+const CREEM_CHECKOUT_URL = "https://www.creem.io/payment/prod_LP25TFgO1TcDumocI1Phf";
+س
